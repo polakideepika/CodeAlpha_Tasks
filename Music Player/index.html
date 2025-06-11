@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Music Player</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="https://kit.fontawesome.com/433098993a.js" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="music-player">
+                <nav>
+                    <div class="circle">
+                        <i class="fa-solid fa-angle-left"></i>
+                    </div>
+                    <div class="circle">
+                        <i class="fa-solid fa-bars"></i>
+                    </div>
+                </nav>
+                <img src="Permission to Dance.jpeg" class="song-img">
+                <h1>Permission to Dance </h1>
+                <p>BTS</p>
+
+                    <audio id="song">
+                        <source src="Permission to Dance .mp3" type="audio/mpeg">
+                    </audio>
+                    <div class="time-container">
+                        <span id="currentTime">0:00</span>
+                        <input type="range" value="0" id="progress">
+                        <span id="totalTime">0:00</span>
+                    </div>
+                    
+
+                    <div class="controls">
+                        <div><i class="fa-solid fa-backward"></i></div>
+                        <div onclick="playPause()"><i class="fa-solid fa-play" id="ctrlIcon"></i></div>
+                        <div><i class="fa-solid fa-forward"></i></div>
+                    </div>
+            </div>
+        </div>
+
+        <script>
+
+let progress = document.getElementById("progress");
+let song = document.getElementById("song");
+let ctrlIcon = document.getElementById("ctrlIcon");
+let currentTimeDisplay = document.getElementById("currentTime");
+let totalTimeDisplay = document.getElementById("totalTime");
+
+// Get the skip and back buttons
+let backButton = document.querySelector(".fa-backward");
+let forwardButton = document.querySelector(".fa-forward");
+
+let interval;
+
+// Update total song duration once metadata is loaded
+song.onloadedmetadata = function () {
+    progress.max = song.duration;
+    progress.value = song.currentTime;
+    totalTimeDisplay.innerText = formatTime(song.duration);
+};
+
+// Play/Pause Function
+function playPause() {
+    if (song.paused) {
+        song.play();
+        ctrlIcon.classList.add("fa-pause");
+        ctrlIcon.classList.remove("fa-play");
+        updateProgress();
+    } else {
+        song.pause();
+        ctrlIcon.classList.remove("fa-pause");
+        ctrlIcon.classList.add("fa-play");
+        clearInterval(interval);
+    }
+}
+
+// Function to update progress bar and time display
+function updateProgress() {
+    clearInterval(interval);
+
+    interval = setInterval(() => {
+        progress.value = song.currentTime;
+        currentTimeDisplay.innerText = formatTime(song.currentTime);
+    }, 500);
+}
+
+// Change song position when user interacts with progress bar
+progress.oninput = function () {
+    song.currentTime = progress.value;
+    currentTimeDisplay.innerText = formatTime(song.currentTime);
+};
+
+// Format time in MM:SS format
+function formatTime(time) {
+    let minutes = Math.floor(time / 60);
+    let seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+}
+
+// Reset play button when the song ends
+song.addEventListener("ended", () => {
+    ctrlIcon.classList.remove("fa-pause");
+    ctrlIcon.classList.add("fa-play");
+    clearInterval(interval);
+});
+
+// Function to skip forward 10 seconds
+function skipForward() {
+    song.currentTime = Math.min(song.currentTime + 10, song.duration);
+    progress.value = song.currentTime;
+    currentTimeDisplay.innerText = formatTime(song.currentTime);
+}
+
+// Function to skip backward 10 seconds
+function skipBackward() {
+    song.currentTime = Math.max(song.currentTime - 10, 0);
+    progress.value = song.currentTime;
+    currentTimeDisplay.innerText = formatTime(song.currentTime);
+}
+
+// Attach event listeners to skip buttons
+backButton.addEventListener("click", skipBackward);
+forwardButton.addEventListener("click", skipForward);
+
+
+
+        </script>
+    </body>
+</html>
