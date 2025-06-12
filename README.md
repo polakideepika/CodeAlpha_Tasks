@@ -1,4 +1,4 @@
-# CodeAlpha_Frontend Development Tasks
+# CodeAlpha_Tasks
 This repository contains a collection of frontend projects, including a Calculator, Music Player, and Image Gallery. These projects improved my frontend development skills .
  
  1.Calculator:-
